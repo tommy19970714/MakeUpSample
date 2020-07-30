@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,8 @@
 		8F1D0F6E24D27284002F8F5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F1D0F6D24D27284002F8F5D /* Assets.xcassets */; };
 		8F1D0F7124D27284002F8F5D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F1D0F6F24D27284002F8F5D /* Main.storyboard */; };
 		8F1D0F7D24D27284002F8F5D /* MakeUpSampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1D0F7C24D27284002F8F5D /* MakeUpSampleTests.swift */; };
+		8F1D0F8824D27404002F8F5D /* FaceLandmarksDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1D0F8724D27404002F8F5D /* FaceLandmarksDetector.swift */; };
+		8F1D0F8B24D27464002F8F5D /* MetalPetal in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1D0F8A24D27464002F8F5D /* MetalPetal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +37,7 @@
 		8F1D0F7824D27284002F8F5D /* MakeUpSampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MakeUpSampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F1D0F7C24D27284002F8F5D /* MakeUpSampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeUpSampleTests.swift; sourceTree = "<group>"; };
 		8F1D0F7E24D27284002F8F5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8F1D0F8724D27404002F8F5D /* FaceLandmarksDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceLandmarksDetector.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F1D0F8B24D27464002F8F5D /* MetalPetal in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +82,7 @@
 			children = (
 				8F1D0F6924D27282002F8F5D /* AppDelegate.swift */,
 				8F1D0F6B24D27282002F8F5D /* ViewController.swift */,
+				8F1D0F8724D27404002F8F5D /* FaceLandmarksDetector.swift */,
 				8F1D0F6D24D27284002F8F5D /* Assets.xcassets */,
 				8F1D0F6F24D27284002F8F5D /* Main.storyboard */,
 				8F1D0F7224D27284002F8F5D /* Info.plist */,
@@ -111,6 +116,9 @@
 			dependencies = (
 			);
 			name = MakeUpSample;
+			packageProductDependencies = (
+				8F1D0F8A24D27464002F8F5D /* MetalPetal */,
+			);
 			productName = MakeUpSample;
 			productReference = 8F1D0F6624D27282002F8F5D /* MakeUpSample.app */;
 			productType = "com.apple.product-type.application";
@@ -161,6 +169,9 @@
 				Base,
 			);
 			mainGroup = 8F1D0F5D24D27282002F8F5D;
+			packageReferences = (
+				8F1D0F8924D27464002F8F5D /* XCRemoteSwiftPackageReference "MetalPetal" */,
+			);
 			productRefGroup = 8F1D0F6724D27282002F8F5D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -196,6 +207,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F1D0F6C24D27282002F8F5D /* ViewController.swift in Sources */,
+				8F1D0F8824D27404002F8F5D /* FaceLandmarksDetector.swift in Sources */,
 				8F1D0F6A24D27282002F8F5D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -458,6 +470,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8F1D0F8924D27464002F8F5D /* XCRemoteSwiftPackageReference "MetalPetal" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MetalPetal/MetalPetal";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.13.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8F1D0F8A24D27464002F8F5D /* MetalPetal */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F1D0F8924D27464002F8F5D /* XCRemoteSwiftPackageReference "MetalPetal" */;
+			productName = MetalPetal;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8F1D0F5E24D27282002F8F5D /* Project object */;
 }

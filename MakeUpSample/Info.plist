@@ -32,5 +32,7 @@
 	<true/>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Use camera for make up</string>
 </dict>
 </plist>
