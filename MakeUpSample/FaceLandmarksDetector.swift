@@ -141,4 +141,27 @@ class FaceLandmarksDetector {
 
         return context.makeImage()!
     }
+    
+    open func fillLip(for source: CGImage, faceObservations: [VNFaceObservation]) -> CGImage {
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        let context = CGContext(data: nil,
+                                width: source.width,
+                                height: source.height,
+                                bitsPerComponent: 8,
+                                bytesPerRow: 0,
+                                space: colorSpace,
+                                bitmapInfo: bitmapInfo.rawValue)!
+        context.draw(source, in: CGRect(x: 0, y: 0, width: source.width, height: source.height))
+        faceObservations.forEach { obs in
+            guard let points = obs.landmarks?.outerLips?.pointsInImage(imageSize: CGSize(width: source.width, height: source.height)) else { return }
+            
+            context.setFillColor(red: 0.7, green: 0.1, blue: 0.3, alpha: 0.7)
+            context.setBlendMode(.color)
+            context.addLines(between: points)
+            context.fillPath()
+        }
+        
+        return context.makeImage()!
+    }
 }
