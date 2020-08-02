@@ -20,6 +20,7 @@ class ViewController: NSViewController {
     fileprivate var captureCounter = 0
     fileprivate var filterType = FilterType.skinSmoothing // Choice Filter type
     fileprivate var drawLandmark = true // If you want to draw landmark in your camera, please choice true
+    fileprivate var drawLip = true
     
     enum FilterType {
         case skinSmoothing
@@ -120,6 +121,9 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             guard var outputImage = self.addFilter(cgImage: cgImage) else { return }
             if self.drawLandmark {
                 outputImage = self.faceDetector.drawAllLandmarkds(for: outputImage, faceObservations: faceObservations)
+            }
+            if self.drawLip {
+                outputImage = self.faceDetector.fillLip(for: outputImage, faceObservations: faceObservations)
             }
             
             DispatchQueue.main.async {
