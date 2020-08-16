@@ -173,7 +173,7 @@ class FaceLandmarksDetector {
                 let minWidth = points.map({$0.x}).min()!
                 let maxHight = points.map({$0.y}).max()!
                 let minHight = points.map({$0.y}).min()!
-                return CGPoint(x: (maxWidth-minWidth)/2, y: (maxHight-minHight)/2)
+                return CGPoint(x: (maxWidth+minWidth)/2, y: (maxHight+minHight)/2)
             }
             
             guard let leftEyePoints = obs.landmarks?.leftEye?.pointsInImage(imageSize: outputImage.extent.size) else { return }
@@ -190,13 +190,13 @@ class FaceLandmarksDetector {
             .applyingFilter("CIBumpDistortion",
                             parameters: [
                                 kCIInputRadiusKey: eyeDistance / 1.1,
-                                kCIInputScaleKey: 0.5, // 仮に0.5にするとかなり大きい眼となる
+                                kCIInputScaleKey: 0.25, // 仮に0.5にするとかなり大きい眼となる
                                 kCIInputCenterKey: leftEyeCenter.toCIVector()])
             .cropped(to: outputImage.extent)
             .applyingFilter("CIBumpDistortion",
                             parameters: [
                                 kCIInputRadiusKey: eyeDistance / 1.1,
-                                kCIInputScaleKey: 0.5,
+                                kCIInputScaleKey: 0.25,
                                 kCIInputCenterKey: rightEyeCenter.toCIVector()])
             .cropped(to: outputImage.extent)
         }
