@@ -164,4 +164,56 @@ class FaceLandmarksDetector {
         
         return context.makeImage()!
     }
+    
+    open func resizeEye(for source: CGImage, faceObservations: [VNFaceObservation]) -> CGImage {
+        var outputImage = CIImage(cgImage: source)
+        faceObservations.forEach { obs in
+            func calcCenter(points: [CGPoint]) -> CGPoint {
+                let maxWidth = points.map({$0.x}).max()!
+                let minWidth = points.map({$0.x}).min()!
+                let maxHight = points.map({$0.y}).max()!
+                let minHight = points.map({$0.y}).min()!
+                return CGPoint(x: (maxWidth-minWidth)/2, y: (maxHight-minHight)/2)
+            }
+            
+            guard let leftEyePoints = obs.landmarks?.leftEye?.pointsInImage(imageSize: outputImage.extent.size) else { return }
+            let leftEyeCenter = calcCenter(points: leftEyePoints)
+            print(leftEyeCenter)
+            
+            guard let rightEyePoints = obs.landmarks?.rightEye?.pointsInImage(imageSize: outputImage.extent.size) else { return }
+            let rightEyeCenter = calcCenter(points: rightEyePoints)
+            print(rightEyeCenter)
+            
+            let eyeDistance = leftEyeCenter.distanceTo(point: rightEyeCenter)
+            
+            outputImage = outputImage
+            .applyingFilter("CIBumpDistortion",
+                            parameters: [
+                                kCIInputRadiusKey: eyeDistance / 1.1,
+                                kCIInputScaleKey: 0.5, // 仮に0.5にするとかなり大きい眼となる
+                                kCIInputCenterKey: leftEyeCenter.toCIVector()])
+            .cropped(to: outputImage.extent)
+            .applyingFilter("CIBumpDistortion",
+                            parameters: [
+                                kCIInputRadiusKey: eyeDistance / 1.1,
+                                kCIInputScaleKey: 0.5,
+                                kCIInputCenterKey: rightEyeCenter.toCIVector()])
+            .cropped(to: outputImage.extent)
+        }
+        let context = CIContext(options: nil)
+        let cgImage = context.createCGImage(outputImage, from: outputImage.extent)!
+        return cgImage
+    }
+}
+
+extension CGPoint {
+    func distanceTo(point: CGPoint) -> CGFloat {
+        return hypot(self.x - point.x, self.y - point.y)
+    }
+}
+
+extension CGPoint {
+    func toCIVector() -> CIVector {
+        return CIVector(x: self.x, y: self.y)
+    }
 }
