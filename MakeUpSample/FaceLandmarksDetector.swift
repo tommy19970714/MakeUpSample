@@ -142,7 +142,7 @@ class FaceLandmarksDetector {
         return context.makeImage()!
     }
     
-    open func fillLip(for source: CGImage, faceObservations: [VNFaceObservation]) -> CGImage {
+    open func fillLip(for source: CGImage, red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat, faceObservations: [VNFaceObservation]) -> CGImage {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         let context = CGContext(data: nil,
@@ -158,8 +158,8 @@ class FaceLandmarksDetector {
             guard let outerPoints = obs.landmarks?.outerLips?.pointsInImage(imageSize: imageSize) else { return }
             guard let innerPoints = obs.landmarks?.innerLips?.pointsInImage(imageSize: imageSize) else { return }
             
-            let minOuter = outerPoints.min { $0.x < $1.x}!
-            let maxOuter = outerPoints.max{ $0.x < $1.x }!
+            let minOuter = outerPoints[13]
+            let maxOuter = outerPoints[7]
             let ysortedInner = innerPoints.sorted { $0.y < $1.y }
             let lowerInner = ysortedInner[0..<ysortedInner.count/2].sorted{$0.x < $1.x }
             let upperInner = ysortedInner[ysortedInner.count/2..<ysortedInner.count].sorted {$0.x > $1.x }
@@ -168,7 +168,7 @@ class FaceLandmarksDetector {
             modifiedInner.append(maxOuter)
             modifiedInner.append(contentsOf: upperInner)
             
-            context.setFillColor(red: 0.7, green: 0.1, blue: 0.3, alpha: 0.7)
+            context.setFillColor(red: red, green: green, blue: blue, alpha: alpha)
             context.setBlendMode(.color)
             context.addLines(between: outerPoints)
             context.addLines(between: modifiedInner)
