@@ -124,7 +124,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                 outputImage = self.faceDetector.drawAllLandmarkds(for: outputImage, faceObservations: faceObservations)
             }
             if self.drawLip {
-                outputImage = self.faceDetector.fillLip(for: outputImage, red: 0.7, green: 0.1, blue: 0.3, alpha: 0.7, faceObservations: faceObservations)
+                outputImage = self.faceDetector.fillLip(for: outputImage, red: 0.7, green: 0.1, blue: 0.4, alpha: 0.4, faceObservations: faceObservations)
             }
             
             if self.resizeEye {

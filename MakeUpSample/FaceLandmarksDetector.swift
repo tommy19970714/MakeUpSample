@@ -154,6 +154,17 @@ class FaceLandmarksDetector {
                                 bitmapInfo: bitmapInfo.rawValue)!
         context.draw(source, in: CGRect(x: 0, y: 0, width: source.width, height: source.height))
         let imageSize = CGSize(width: source.width, height: source.height)
+        
+        let maskContext = CGContext(data: nil,
+                                    width: source.width,
+                                    height: source.height,
+                                    bitsPerComponent: 8,
+                                    bytesPerRow: 0,
+                                    space: colorSpace,
+                                    bitmapInfo: bitmapInfo.rawValue)!
+        maskContext.setStrokeColor(red: red, green: green, blue: blue, alpha: alpha)
+        maskContext.setLineWidth(20.0)
+        
         faceObservations.forEach { obs in
             guard let outerPoints = obs.landmarks?.outerLips?.pointsInImage(imageSize: imageSize) else { return }
             guard let innerPoints = obs.landmarks?.innerLips?.pointsInImage(imageSize: imageSize) else { return }
@@ -173,9 +184,32 @@ class FaceLandmarksDetector {
             context.addLines(between: outerPoints)
             context.addLines(between: modifiedInner)
             context.fillPath()
+            
+            // draw lip mask
+            maskContext.addLines(between: outerPoints)
+            maskContext.closePath()
+            maskContext.strokePath()
         }
+
+        let ciImage = CIImage(cgImage: context.makeImage()!)
+        let maskImage = CIImage(cgImage: maskContext.makeImage()!)
         
-        return context.makeImage()!
+        let maskedBlurFilter = CIFilter(name: "CIMaskedVariableBlur")
+        maskedBlurFilter?.setValue(ciImage, forKey: kCIInputImageKey)
+        maskedBlurFilter?.setValue(200, forKey:kCIInputRadiusKey)
+        maskedBlurFilter?.setValue(maskImage, forKey: "inputMask")
+        
+        let crop = CIFilter(name: "CICrop")
+        crop?.setValue(maskedBlurFilter?.outputImage, forKey: "inputImage")
+        crop?.setValue(CIVector(cgRect: ciImage.extent), forKey: "inputRectangle")
+        
+        if let result = crop?.outputImage {
+            let ciContext = CIContext(options: nil)
+            return ciContext.createCGImage(result, from: result.extent)!
+        }
+        else {
+            return context.makeImage()!
+        }
     }
     
     open func resizeEye(for source: CGImage, faceObservations: [VNFaceObservation]) -> CGImage {
