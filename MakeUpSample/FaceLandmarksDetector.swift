@@ -142,7 +142,7 @@ class FaceLandmarksDetector {
         return context.makeImage()!
     }
     
-    open func fillLip(for source: CGImage, faceObservations: [VNFaceObservation]) -> CGImage {
+    open func fillLip(for source: CGImage, red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat, faceObservations: [VNFaceObservation]) -> CGImage {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         let context = CGContext(data: nil,
@@ -153,12 +153,25 @@ class FaceLandmarksDetector {
                                 space: colorSpace,
                                 bitmapInfo: bitmapInfo.rawValue)!
         context.draw(source, in: CGRect(x: 0, y: 0, width: source.width, height: source.height))
+        let imageSize = CGSize(width: source.width, height: source.height)
         faceObservations.forEach { obs in
-            guard let points = obs.landmarks?.outerLips?.pointsInImage(imageSize: CGSize(width: source.width, height: source.height)) else { return }
+            guard let outerPoints = obs.landmarks?.outerLips?.pointsInImage(imageSize: imageSize) else { return }
+            guard let innerPoints = obs.landmarks?.innerLips?.pointsInImage(imageSize: imageSize) else { return }
             
-            context.setFillColor(red: 0.7, green: 0.1, blue: 0.3, alpha: 0.7)
+            let minOuter = outerPoints[13]
+            let maxOuter = outerPoints[7]
+            let ysortedInner = innerPoints.sorted { $0.y < $1.y }
+            let lowerInner = ysortedInner[0..<ysortedInner.count/2].sorted{$0.x < $1.x }
+            let upperInner = ysortedInner[ysortedInner.count/2..<ysortedInner.count].sorted {$0.x > $1.x }
+            var modifiedInner = [minOuter]
+            modifiedInner.append(contentsOf: lowerInner)
+            modifiedInner.append(maxOuter)
+            modifiedInner.append(contentsOf: upperInner)
+            
+            context.setFillColor(red: red, green: green, blue: blue, alpha: alpha)
             context.setBlendMode(.color)
-            context.addLines(between: points)
+            context.addLines(between: outerPoints)
+            context.addLines(between: modifiedInner)
             context.fillPath()
         }
         
